@@ -1,0 +1,83 @@
+﻿@model BlogCMS.Models.Post
+@{
+    ViewBag.Title = "Create";
+}
+
+<div class="container" style="margin-top:50px;">
+    <div class="row">
+        <!-- Blog Sidebar Widgets Column -->
+        <div class="col-sm-3">
+            <!-- Blog Categories Well -->
+            <div class="well">
+                <h4>Dashboard</h4>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ul class="list-unstyled"></ul>
+                        @Html.Partial("_DashboardPartial", null)
+                    </div>
+                    <!-- /.col-lg-6 -->
+                </div>
+                <!-- /.row -->
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <section class="well">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        <h4>Post</h4>
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2 text-right" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">                               
+                                @Html.TextAreaFor(model => model.Description, new { @id="summernotetext", @class = "form-control", Rows = 10 })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.isPublished, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.CheckBoxFor(model => model.isPublished, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.isPublished, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Create" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </section>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#summernotetext').summernote({
+                height: 100,                 // set editor height
+                minHeight: null,             // set minimum height of editor
+                maxHeight: null,             // set maximum height of editor
+                focus: true,
+                themes: 'sandstone'
+            });
+        });
+    </script>    
+}
+

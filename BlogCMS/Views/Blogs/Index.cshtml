@@ -1,0 +1,73 @@
+﻿@model IEnumerable<BlogCMS.Models.Post>
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container" style="margin-top:50px;">
+    <div class="row">
+        <!-- Blog Sidebar Widgets Column -->
+        <div class="col-sm-3">
+            <!-- Blog Categories Well -->
+            <div class="well">
+                <h4>Blogs List</h4>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ul class="list-unstyled"></ul>
+                        @Html.Partial("_DashboardPartial", null)
+                    </div>
+                    <!-- /.col-lg-6 -->
+                </div>
+                <!-- /.row -->
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <section class="well">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Post ID</th>
+                            <th>Title</th>
+                            <th>Registration date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <th scope="row">@item.Id</th>
+                                <td>@Html.ActionLink(@Html.DisplayFor(modelItem => item.Title).ToString(), "Edit", new { id = item.Id })</td>
+                                <td>@item.Published</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li>
+                            <a href="?index=1" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+
+                        </li>
+
+                        @for (int i = 1; i <= @ViewBag.Pages; i++)
+                        {
+                            <li>
+                                @Html.ActionLink(i.ToString(), "Index", new { index = i })
+                            </li>
+                        }
+
+
+                        <li>
+                            <a href="?index=@(Html.Raw(ViewBag.Pages))" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </section>
+        </div>
+    </div>
+</div>
+

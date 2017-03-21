@@ -1,0 +1,130 @@
+﻿@model PagedList.IPagedList<BlogCMS.Models.Post>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row" style="margin-top:40px;">
+
+    <div class="col-md-8">
+        @foreach (var item in Model)
+        {
+            <!-- Blog Post -->
+            <section class="well">
+                <h2>
+                    @Html.ActionLink(@Html.DisplayFor(modelItem => item.Title).ToString(), "Details", new { id = item.Id })
+                </h2>
+                <p><span class="glyphicon glyphicon-time"></span>&nbsp;PostedOn @Html.DisplayFor(modelItem => item.Published)</p>
+                <hr>
+                <p>@Html.Raw(item.Description.Replace(Environment.NewLine, "<br/>"))</p>
+                <a class="btn btn-raised btn-warning" href="@Url.Action("Details", "Home", new { id = item.Id })">ReadMore<span class="glyphicon glyphicon-chevron-right"></span></a>
+            </section>
+        }
+
+        @if (Model.PageCount > 1)
+        {
+            if (!String.IsNullOrEmpty(ViewBag.searchQuery))
+            {
+                <div class="pager">
+                    @Html.PagedListPager(Model, page => Url.Action("Search", new
+                   {
+                       q = ViewBag.searchQuery,
+                       page
+                   }))
+                </div>
+            }
+            else if (!String.IsNullOrEmpty(ViewBag.dateQuery))
+            {
+                <div class="pager">
+                    @Html.PagedListPager(Model, page => Url.Action("Date", new
+                   {
+                       id = ViewBag.dateQuery,
+                       page
+                   }))
+                </div>
+            }
+            else
+            {
+                <div class="pager">
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new
+                    {
+                        page
+                    }))
+                </div>
+            }
+
+        }
+    </div>
+    <!-- Blog Sidebar Widgets Column -->
+    <div class="col-md-4">
+        
+        <!-- Blog Search Well -->
+        <div class="well">
+            <h4>Blog Search</h4>
+            @using (Html.BeginForm("Search", "Home", FormMethod.Get, null))
+            {
+                <div class="input-group">
+                    <input type="text" name="q" value="@ViewBag.searchQuery" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            }
+
+            <!-- /.input-group -->
+        </div>
+
+        <!-- Blog Categories Well -->
+        <div class="well">
+            <h4>Archive</h4>
+            <div class="row">
+                <div class="col-lg-6">
+                    <ul class="list-unstyled">
+                        @{
+                            List<int> uniqueYearLabel = new List<int>();
+                            Dictionary<DateTime, int> yearList = ViewData["yearList"] as Dictionary<DateTime, int>;
+                            if (yearList != null)
+                            {
+                                foreach (var item in yearList)
+                                {
+                                    if (!uniqueYearLabel.Contains(item.Key.Year))
+                                    {
+                                        uniqueYearLabel.Add(item.Key.Year);
+                                    }
+                                }
+
+                                var yearmonthlist = yearList.GroupBy(p => new { p.Key.Year, p.Key.Month });
+
+                                // uniquelist loop
+                                foreach (var label in uniqueYearLabel)
+                                {
+                                    @Html.Raw("<li>")
+                                    @Html.Raw(label)
+
+                                    foreach (var dic in yearList)
+                                    {
+                                        @Html.Raw("<ul>")
+                                        if (label == dic.Key.Year)
+                                        {
+                                            @Html.Raw("<li>")
+                                            @Html.ActionLink(dic.Key.ToString("MMM"), "Date", new { id = dic.Key.ToString("yyyy-MM") })
+                                            @Html.Raw(" (" + dic.Value.ToString() + ")")
+
+                                            @Html.Raw("</li>")
+                                        }
+                                        @Html.Raw("</ul>")
+                                    }
+                                    @Html.Raw("</li>")
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+                <!-- /.col-lg-6 -->
+            </div>
+            <!-- /.row -->
+        </div>
+    </div>
+</div>
