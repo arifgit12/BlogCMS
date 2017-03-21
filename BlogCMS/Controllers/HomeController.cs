@@ -16,7 +16,7 @@ namespace BlogCMS.Controllers
 
         public HomeController()
         {
-            _dataService = BlogService.Instance;// new DataService();
+            _dataService = BlogService.Instance;
         }
 
         public ActionResult Index(int page = 1, int pageSize = 3)
